@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import jwt_decode from 'jwt-decode';
 
 
-export function Profile({ setUsers }) {
+export function Profile() {
   const [loading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const auth = useAuth(); 
@@ -22,11 +22,8 @@ export function Profile({ setUsers }) {
     const conf = confirm('Are you sure?');
     if (!conf) return;
 
-    const usernameToRemove = auth.currentUser.username;
     const { id } = jwt_decode(auth.currentUser.accessToken);
     await auth.deleteUser(id);
-
-    setUsers(prev => prev.filter(u => u.username !== usernameToRemove));
     navigate('/');
   };
 

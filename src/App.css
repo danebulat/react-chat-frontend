@@ -94,38 +94,6 @@ body {
   color: #3a3a3a;
 }
 
-.app-info {
-  display: flex;
-  flex-direction: column;
-  row-gap: 6px;
-
-  margin: 10px auto 30px;
-  padding: 16px 0;
-  max-width: 500px;
-  border-top: 1px solid #d3d3d3;
-  border-bottom: 1px solid #d3d3d3;
-
-  justify-self: center;
-}
-.app-info > h2 {
-  font-size: 13px;
-  font-weight: 600;
-}
-.app-info > p {
-  font-size: 14px;
-  line-height: 20px;
-}
-.code-links a {
-  text-decoration: underline;
-  color: inherit;
-}
-.code-links a:hover {
-  color: #5e5e5e;
-}
-.code-links span { display: inline-block; }
-.code-links span:first-of-type { margin-right: 2px; }
-.code-links span:last-of-type { margin-left: 6px; }
-
 /* ---------------------------------------- */
 /* Main Content                             */
 /* ---------------------------------------- */
@@ -150,7 +118,7 @@ body {
 .box {
   max-width: 100%;
 }
-form {
+.page-right form {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -165,13 +133,13 @@ form {
   text-align: center;
   display: block;
 }
-input {
+.page-right input {
   height: 30px;
   border: none;
   border-bottom: 1px solid lightgray;
   text-align: center;
 }
-input:focus {
+.page-right input:focus {
   outline: none;
 }
 .submitButton {
@@ -265,11 +233,6 @@ input:focus {
     border-right: none;
     width: auto;
   }
-  .app-info {
-    padding: 20px;
-    max-width: none;
-    margin: 20px;
-  }
   .inner-grid {
     grid-template-columns: minmax(0, 1fr);
     column-gap: 0;
@@ -302,11 +265,6 @@ input:focus {
     border-right: none;
     width: auto;
   }
-  .app-info {
-    padding: 20px;
-    max-width: none;
-    margin: 20px;
-  }
   .inner-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 20px;
@@ -338,9 +296,5 @@ input:focus {
   .home {
     width: auto;
     margin: 0 20px;
-  }
-  .app-info {
-    margin-left: 20px;
-    margin-right: 20px;
   }
 }
