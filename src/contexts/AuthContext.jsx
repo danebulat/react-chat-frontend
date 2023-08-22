@@ -23,9 +23,20 @@ export function AuthProvider({ children }) {
 
   const navigate = useNavigate();
 
-  // Axios instance that requires the interceptor 
-  // before every request
+  //Axios instance that requires the interceptor before every request
   const axiosJWT = axios.create();
+
+  //Navigate to login page if not logged in
+  useEffect(() => {
+
+    //try to get user from local storage
+    if (!currentUser) {
+      const storedUser = JSON.parse(localStorage.getItem('currentUser'));
+
+      if (!storedUser) navigate('/');
+      if (!currentUser) setCurrentUser(storedUser);
+    }
+  }, []);
 
   /* -------------------------------------------------- */
   /* Refresh token                                      */
@@ -138,6 +149,7 @@ export function AuthProvider({ children }) {
 
     setCurrentUser(null);
     localStorage.removeItem('currentUser');
+    navigate('/');
   }
 
   async function deleteUser(id) {

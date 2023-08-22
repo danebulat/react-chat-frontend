@@ -2,7 +2,7 @@ import './chatOnline.css';
 
 export default function ChatOnline() {
   return (
-    <div class="chatOnline">
+    <div className="chatOnline">
       <div className="chatOnlineFriend">
 
         <div className="chatOnlineImgContainer">

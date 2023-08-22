@@ -1,62 +1,140 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import TopBar from '../../components/topbar/TopBar';
 import Conversation from '../../components/conversations/Conversation';
 import Message from '../../components/message/Message';
 import ChatOnline from '../../components/chatonline/ChatOnline';
+import axios from 'axios';
 import './messenger.css';
 
 export default function Messenger() {
 
-  const [isLoading, setIsLoading] = useState(true);
-  const auth = useAuth(); 
-  const navigate = useNavigate();
+  const [conversations, setConversations] = useState([]);
+  const [currentChat, setCurrentChat] = useState(null);
+  const [messages, setMessages] = useState(null);
+  const [newMessage, setNewMessage] = useState("");
+
+  const { currentUser } = useAuth(); 
+  const scrollRef = useRef();
+
+  /* -------------------------------------------------- */
+  /* fetch all conversations                            */
+  /* -------------------------------------------------- */
 
   useEffect(() => {
-    //try to get user from local storage
-    if (!auth.currentUser) {
-      const lsCurrentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-      if (!lsCurrentUser) navigate('/');
-      if (!auth.currentUser) auth.setCurrentUser(lsCurrentUser);
-    }
-
-    setIsLoading(false);
+    const getConversations = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/conversations");
+        setConversations(res.data);
+      }
+      catch (err) {
+        console.log(err);
+      }
+    };
+    getConversations();
   }, []);
 
-  // TODO: is loading flag
-  return !isLoading && (  
+  /* -------------------------------------------------- */
+  /* fetch messages when new chat selected              */
+  /* -------------------------------------------------- */
+
+  //TODO: Update junction table (associate conversation
+  //to user.
+
+  useEffect(() => {
+    const getMessages = async () => {
+      if (!currentChat) return;
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/messages/${currentChat.id}`
+        );
+        setMessages(res.data);
+      }
+      catch (err) {
+        console.log(err);
+      }
+    };
+    getMessages();
+  }, [currentChat]);
+
+  /* -------------------------------------------------- */
+  /* handle submit message click                        */
+  /* -------------------------------------------------- */
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const message = {
+      userId: currentUser.id,
+      conversationId: currentChat.id,
+      text: newMessage,
+    };
+    
+    try {
+      const res = await axios.post("http://localhost:5000/api/messages",
+        message,
+        { headers: { authorization: "Bearer " + currentUser.accessToken }}
+      );
+      setMessages([...messages, res.data]);
+      setNewMessage("");
+    }
+    catch (err) {
+      console.log(err);
+    }
+  };
+
+  /* -------------------------------------------------- */
+  /* Scroll when new message added                      */
+  /* -------------------------------------------------- */
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages]);
+
+  return (
     <>
       <TopBar />
       <div className="messenger">
 
         <div className="chatMenu">
-          <div class="chatMenuWrapper">
+          <div className="chatMenuWrapper">
             <input placeholder="Search for friends" className="chatMenuInput" />
-            <Conversation />
-            <Conversation />
-            <Conversation />
-            <Conversation />
+            { conversations.map(c => (
+              <div key={c.title} onClick={() => setCurrentChat(c)}>
+                <Conversation conversation={c}/>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="chatBox">
-          <div class="chatBoxWrapper">
-            <div className="chatBoxTop">
-               <Message />
-               <Message own={true} />
-               <Message />
-            </div>
-            <div className="chatBoxBottom">
-              <textarea className="chatMessageInput" placeholder="write something..."></textarea>
-              <button className="chatSubmitButton">Send</button>
-            </div>
+          <div className="chatBoxWrapper">
+            {currentChat ?
+              <>
+                <div className="chatBoxTop">
+                  {messages && messages.map((m, index) => (
+                    <div key={index} ref={scrollRef}>
+                      <Message message={m} 
+                        own={m.user_id === currentUser.id ? true : false} />
+                    </div>
+                  ))}
+                </div>
+                <div className="chatBoxBottom">
+                  <textarea onChange={e => setNewMessage(e.target.value)}
+                    value={newMessage}
+                    className="chatMessageInput" 
+                    placeholder="write something...">
+                  </textarea>
+                  <button onClick={handleSubmit} className="chatSubmitButton">Send</button>
+                </div>
+              </> 
+              : <span className="noConversationText">Open a conversation to start a chat</span>
+            }
           </div>
         </div>
         
         <div className="chatOnline">
-          <div class="chatOnlineWrapper">
+          <div className="chatOnlineWrapper">
             <ChatOnline />
             <ChatOnline />
             <ChatOnline />
