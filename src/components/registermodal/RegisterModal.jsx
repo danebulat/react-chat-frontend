@@ -1,22 +1,22 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext.jsx';
-import './loginModal.css';
+import './registerModal.css';
 
-export default function LoginModal({ show, setShow }) {
+export default function RegisterModal({ show, setShow }) {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading,  setLoading]  = useState(false);
 
   const { 
-    login, 
-    loginError, 
-    loginErrorMsg } = useAuth();
+    register, 
+    registerError, 
+    registerErrorMsg } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const res = await login(username.trim(), password.trim());
+    const res = await register(username.trim(), password.trim()); 
     setLoading(false);
 
     if (res) {
@@ -34,11 +34,11 @@ export default function LoginModal({ show, setShow }) {
   }
 
   return (
-    <div className={ show ? "loginModal showModal" : "loginModal hideModal"} >
-      <div className="loginModalInner">
-        <form className="loginForm" onSubmit={handleSubmit}>
-          <h1 className="loginTitle">Login</h1>
-          {loginError && <span className="loginError">{loginErrorMsg}</span>}
+    <div className={ show ? "registerModal showModal" : "registerModal hideModal"} >
+      <div className="registerModalInner">
+        <form className="registerForm" onSubmit={handleSubmit}>
+          <h1 className="registerTitle">Register</h1>
+          {registerError && <span className="registerError">{registerErrorMsg}</span>}
           <input
             className="formInput"
             type="text"
@@ -53,11 +53,11 @@ export default function LoginModal({ show, setShow }) {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
           />
-            <button className="loginSubmitButton" type="submit"
+            <button className="registerSubmitButton" type="submit"
                 disabled={loading ? 1 : 0} >
-              Login
+              Register 
             </button>
-            <button className="loginCloseButton" onClick={handleClose}>
+            <button className="registerCloseButton" onClick={handleClose}>
               Close
             </button>
         </form>
@@ -66,3 +66,4 @@ export default function LoginModal({ show, setShow }) {
     </div>
   );
 }
+

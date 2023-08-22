@@ -86,7 +86,7 @@ export function AuthProvider({ children }) {
   /* Handlers                                           */
   /* -------------------------------------------------- */
 
-  async function register(username, password, setUsers) {
+  async function register(username, password) {
     if (!username || !password) {
       setRegisterError(true);
       setRegisterErrorMsg('Provide a username and password');
@@ -100,15 +100,15 @@ export function AuthProvider({ children }) {
 
       setCurrentUser({ ...res.data });
       setRegisterError(false);
-
+      setRegisterError('');
       localStorage.setItem('currentUser', JSON.stringify({ ...res.data }));
-      setUsers(prev => [...prev, { ...res.data }]);
-      navigate('/profile');
+      return true;
     }
     catch (err) {
       console.log(err);
       setRegisterError(true);
       setRegisterErrorMsg(err.response.data.error);
+      return false;
     }
   }
 
@@ -126,12 +126,15 @@ export function AuthProvider({ children }) {
 
       setCurrentUser({ ...res.data });
       setLoginError(false);
+      setLoginErrorMsg('');
       localStorage.setItem('currentUser', JSON.stringify({ ...res.data }));
+      return true;
     }
     catch (err) {
       console.log(err);
       setLoginError(true);
       setLoginErrorMsg(err.response.data.error);
+      return false;
     }
   }
 

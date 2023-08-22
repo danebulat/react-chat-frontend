@@ -107,7 +107,6 @@ export default function Messenger() {
     //replace anonymous user with logged in user for socket
     //or the other way round
     setupSocket();
-
   }, [currentUser]);
 
   /* -------------------------------------------------- */
@@ -115,6 +114,7 @@ export default function Messenger() {
   /* -------------------------------------------------- */
 
   useEffect(() => {
+    //console.log('fetching stuff...');
 
     //get all conversations using api
     const getConversations = async () => {
@@ -140,7 +140,7 @@ export default function Messenger() {
 
     getConversations();
     getRegisteredUsers();
-  }, []);
+  }, [currentUser]); // re-fretch users when user registers
 
   /* -------------------------------------------------- */
   /* fetch messages when new chat selected              */
@@ -158,7 +158,6 @@ export default function Messenger() {
           `http://localhost:5000/api/messages/${currentChat.id}`
         );
         setMessages(res.data);
-        console.log(messages);
 
         //cache joined conversation on socket server
         //handle both anonymouse and logged in users
