@@ -126,9 +126,7 @@ export function AuthProvider({ children }) {
 
       setCurrentUser({ ...res.data });
       setLoginError(false);
-
       localStorage.setItem('currentUser', JSON.stringify({ ...res.data }));
-      navigate('/profile');
     }
     catch (err) {
       console.log(err);
@@ -148,7 +146,6 @@ export function AuthProvider({ children }) {
 
     setCurrentUser(null);
     localStorage.removeItem('currentUser');
-    navigate('/');
   }
 
   async function deleteUser(id) {

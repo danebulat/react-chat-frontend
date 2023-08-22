@@ -1,0 +1,72 @@
+.showModal {
+  display: block;
+}
+.hideModal {
+  display: none;
+}
+.loginModal {
+  position: fixed;
+  top: calc(50% - 150px);
+  left: 20%;
+ 
+  width: 60vw;
+  min-height: 300px;
+  background-color: #5852d6;
+  color: #fff;
+  border-radius: 20px;
+  z-index: 999;
+}
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  padding: 30px;
+}
+.loginTitle {
+  font-size: 26px;
+  font-weight: 600;
+  align-self: center;
+}
+.formInput {
+  font-family: 'Noto Sans', sans-serif;
+  background-color: transparent;
+  color: #fff;
+  padding: 10px 14px;
+  border: 2px solid #8681ef;
+  border-radius: 12px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: 400;
+}
+.formInput:focus {
+  outline: none;
+}
+.formInput::placeholder {
+  color: #8681ef;
+}
+.loginSubmitButton {
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background-color: #8681ef;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+.loginCloseButton {
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background-color: #8681ef;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+.loginCloseButton:hover,
+.loginSubmitButton:hover {
+  background-color: #7d78e3;
+}
+.loginError {
+  text-align: center;
+  color: lightpink;
+}

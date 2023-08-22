@@ -24,6 +24,10 @@ export default function Messenger() {
   const socket = useRef(null);
   const anonId = useRef(null);
 
+  /* -------------------------------------------------- */
+  /* Helper functions                                   */
+  /* -------------------------------------------------- */
+
   function getOnlineUsers() {
     const onlineIds = onlineUsers.map(o => o.userId);
 
@@ -41,10 +45,9 @@ export default function Messenger() {
   }
 
   function setupSocket() {
-    //get connected users
-    socket.current.on("getUsers", users => {
-      setOnlineUsers(users); //TODO: Store only user ids
-    });
+
+    //set initial anonId
+    anonId.current = uuidv4();
 
     //cache anonymous user or logged in user on server
     if (!currentUser) {
@@ -52,8 +55,20 @@ export default function Messenger() {
     } else {
       socket.current.emit("addUser", currentUser.id);
     }
+
+    //re-join chat if in chat
+    if (currentChat) {
+      socket.current.emit("joinedChat", {
+        senderId: (currentUser ? currentUser.id : anonId.current),
+        conversationId: currentChat.id,
+      });
+    }
   }
 
+  /* -------------------------------------------------- */
+  /* fetch all conversations                            */
+  /* -------------------------------------------------- */
+    
   //connect socket regardless of login status
   useEffect(() => {
     console.log('current user ' + currentUser);
@@ -61,11 +76,13 @@ export default function Messenger() {
     if (!socket.current) {
       console.log('connect socket...');
 
-      //set initial anonId
-      anonId.current = uuidv4();
-
       //ensure socket is connected on page load
       socket.current = io("ws://localhost:8900");
+     
+      //get connected users
+      socket.current.on("getUsers", users => {
+        setOnlineUsers(users); //TODO: Store only user ids
+      });
 
       //after joining a chat
       socket.current.on("chatJoined", _res => {
@@ -88,10 +105,9 @@ export default function Messenger() {
   useEffect(() => {
 
     //replace anonymous user with logged in user for socket
-    if (currentUser) {
-      console.log('adduser user logged in');
-      setupSocket();
-    } 
+    //or the other way round
+    setupSocket();
+
   }, [currentUser]);
 
   /* -------------------------------------------------- */
