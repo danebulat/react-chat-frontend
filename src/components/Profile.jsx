@@ -1,21 +1,15 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import jwt_decode from 'jwt-decode';
 
-
 export function Profile() {
-  const navigate = useNavigate();
   const auth = useAuth(); 
 
-  console.log(auth);
   const handleDelete = async () => {
     const conf = confirm('Are you sure?');
     if (!conf) return;
 
     const { id } = jwt_decode(auth.currentUser.accessToken);
     await auth.deleteUser(id);
-    navigate('/');
   };
 
   const handleLogout = async () => {

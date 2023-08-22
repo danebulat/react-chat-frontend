@@ -1,17 +1,17 @@
 import './chatOnline.css';
 
-export default function ChatOnline() {
+export default function ChatOnline({ user, isOnline }) {
   return (
     <div className="chatOnline">
       <div className="chatOnlineFriend">
 
         <div className="chatOnlineImgContainer">
-          <img className="chatOnlineImg" src="noAvatar.png" alt="" />
-          <div className="chatOnlineBadge"></div>
+          {isOnline ? <div className="chatOnlineBadge"></div>
+                    : <div className="chatOfflineBadge"></div>}
         </div>
 
         <span className="chatOnlineName">
-          John Doe
+          {user.username} 
         </span>
       </div>
     </div>

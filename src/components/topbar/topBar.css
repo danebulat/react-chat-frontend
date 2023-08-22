@@ -1,4 +1,14 @@
 .topBar {
+  padding: 0 20px;
+  display: flex;
+  column-gap: 10px;
+  align-items: center;
   height: 50px;
-  background-color: #1876f3;
+  background-color: #20232b;
+  border-bottom: 2px solid #000;
+}
+.topBarHeader {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
 }

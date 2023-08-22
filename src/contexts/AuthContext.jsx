@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { serverUri}    from '../config/server.js';
 
 // The context object
-const AuthContext = React.createContext();
+export const AuthContext = React.createContext();
 
 // Return context value
 export function useAuth() {
@@ -25,18 +25,6 @@ export function AuthProvider({ children }) {
 
   //Axios instance that requires the interceptor before every request
   const axiosJWT = axios.create();
-
-  //Navigate to login page if not logged in
-  useEffect(() => {
-
-    //try to get user from local storage
-    if (!currentUser) {
-      const storedUser = JSON.parse(localStorage.getItem('currentUser'));
-
-      if (!storedUser) navigate('/');
-      if (!currentUser) setCurrentUser(storedUser);
-    }
-  }, []);
 
   /* -------------------------------------------------- */
   /* Refresh token                                      */
@@ -160,6 +148,7 @@ export function AuthProvider({ children }) {
       
       setCurrentUser(null);
       localStorage.removeItem('currentUser');
+      navigate('/');
     }
     catch (err) {
       console.log(err);
