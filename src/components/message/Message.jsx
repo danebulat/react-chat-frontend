@@ -4,7 +4,7 @@ import {format} from 'timeago.js';
 export default function Message({message, own, users}) {
 
   const getUsernameById = (userId) => {
-    return users.find(u => u.userId === userId).username;
+    return users.find(u => u.userId === userId)?.username;
   }
 
   return (

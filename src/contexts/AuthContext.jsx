@@ -26,6 +26,17 @@ export function AuthProvider({ children }) {
   //Axios instance that requires the interceptor before every request
   const axiosJWT = axios.create();
 
+  //set user when app loads
+  useEffect(() => {
+    if (!currentUser) {
+      const storedUser = JSON.parse(localStorage.getItem("currentUser"));
+      if (storedUser) {
+        setCurrentUser(storedUser);
+        return;
+      }
+    }
+  }, []);
+
   /* -------------------------------------------------- */
   /* Refresh token                                      */
   /* -------------------------------------------------- */

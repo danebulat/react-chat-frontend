@@ -11,4 +11,30 @@
   color: #fff;
   font-size: 16px;
   font-weight: 600;
+  flex: 1;
+}
+.topBarButtonsContainer {
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 10px;
+}
+
+.logoutButton,
+.loginButton,
+.registerButton {
+  padding: 0 12px;
+  height: 32px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #5852d6;
+  color: #fff;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 600;
+}
+
+.logoutButton:hover,
+.loginButton:hover,
+.registerButton:hover {
+  background-color: #6964df;
 }

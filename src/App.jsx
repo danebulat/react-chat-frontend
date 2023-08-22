@@ -4,21 +4,20 @@ import { Login }         from './components/Login';
 import { Profile }       from './components/Profile';
 import Messenger         from './pages/messenger/Messenger';
 import RequireAuth       from './components/RequireAuth.jsx';
+
 function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Messenger />} />
+
+      <Route path="/login" element={<Login />} />
+
       <Route path="/profile" element={
         <RequireAuth>
           <Profile />
-        </RequireAuth>} 
+        </RequireAuth>}
       />
-      <Route path="/chat" element={
-        <RequireAuth>
-          <Messenger />
-        </RequireAuth>
-      } />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

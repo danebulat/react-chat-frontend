@@ -23,15 +23,16 @@ export function Login() {
     registerError, 
     registerErrorMsg } = useAuth();
 
+  //This is handled in RequireAuth component
   //navigate to profile if user saved in local storage
-  useEffect(() => {
-    const lsCurrentUser = JSON.parse(localStorage.getItem('currentUser'));
+  //useEffect(() => {
+  //  const lsCurrentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-    if (lsCurrentUser) {
-      setCurrentUser(lsCurrentUser);
-      navigate('/profile');
-    }
-  }, []);
+  //  if (lsCurrentUser) {
+  //    setCurrentUser(lsCurrentUser);
+  //    navigate('/profile');
+  //  }
+  //}, []);
 
   //load registered users
   useEffect(() => {

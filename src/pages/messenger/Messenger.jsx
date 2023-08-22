@@ -5,7 +5,8 @@ import Conversation from '../../components/conversations/Conversation';
 import Message from '../../components/message/Message';
 import ChatOnline from '../../components/chatonline/ChatOnline';
 import axios from 'axios';
-import {io} from 'socket.io-client';
+import { io } from 'socket.io-client';
+import { v4 as uuidv4 } from 'uuid';
 import './messenger.css';
 
 export default function Messenger() {
@@ -20,7 +21,8 @@ export default function Messenger() {
 
   const { currentUser } = useAuth(); 
   const scrollRef = useRef();
-  const socket = useRef();
+  const socket = useRef(null);
+  const anonId = useRef(null);
 
   function getOnlineUsers() {
     const onlineIds = onlineUsers.map(o => o.userId);
@@ -38,21 +40,32 @@ export default function Messenger() {
     });
   }
 
+  function setupSocket() {
+    //get connected users
+    socket.current.on("getUsers", users => {
+      setOnlineUsers(users); //TODO: Store only user ids
+    });
+
+    //cache anonymous user or logged in user on server
+    if (!currentUser) {
+      socket.current.emit("addUser", anonId.current);
+    } else {
+      socket.current.emit("addUser", currentUser.id);
+    }
+  }
+
+  //connect socket regardless of login status
   useEffect(() => {
-    if (currentUser) {
+    console.log('current user ' + currentUser);
+
+    if (!socket.current) {
       console.log('connect socket...');
 
-      //ensure socket is connected when user exists
+      //set initial anonId
+      anonId.current = uuidv4();
+
+      //ensure socket is connected on page load
       socket.current = io("ws://localhost:8900");
-
-      //cache user id and socket id on server
-      socket.current.emit("addUser", currentUser.id);
-
-      //get connected users
-      socket.current.on("getUsers", users => {
-        //TODO: Store only user ids
-        setOnlineUsers(users);
-      });
 
       //after joining a chat
       socket.current.on("chatJoined", _res => {
@@ -62,11 +75,22 @@ export default function Messenger() {
       //after receiving a message
       socket.current.on("getMessage", res => {
         setMessages(prev => [...prev, { 
-          sender: res.senderId,
+          user_id: res.senderId, 
           text: res.text, 
           created_at: Date.now(),
         }]);
       });
+
+      setupSocket();
+    }
+  }, []);
+
+  useEffect(() => {
+
+    //replace anonymous user with logged in user for socket
+    if (currentUser) {
+      console.log('adduser user logged in');
+      setupSocket();
     } 
   }, [currentUser]);
 
@@ -118,10 +142,12 @@ export default function Messenger() {
           `http://localhost:5000/api/messages/${currentChat.id}`
         );
         setMessages(res.data);
+        console.log(messages);
 
         //cache joined conversation on socket server
+        //handle both anonymouse and logged in users
         socket.current.emit("joinedChat", {
-          senderId: currentUser.id,
+          senderId: (currentUser ? currentUser.id : anonId.current),
           conversationId: currentChat.id,
         });
       }
@@ -139,7 +165,7 @@ export default function Messenger() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!e.target.value) {
+    if (newMessage === '') {
       return;
     } 
 
@@ -178,6 +204,10 @@ export default function Messenger() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages]);
 
+  /* -------------------------------------------------- */
+  /* Markup                                             */
+  /* -------------------------------------------------- */
+  
   return (
     <>
       <TopBar />
@@ -202,19 +232,30 @@ export default function Messenger() {
                 <div className="chatBoxTop">
                   {messages && messages.map((m, index) => (
                     <div key={index} ref={scrollRef}>
-                      <Message users={registeredUsers} message={m} 
-                        own={m.user_id === currentUser.id ? true : false} />
+                      <Message 
+                        users={registeredUsers} 
+                        message={m} 
+                        own={
+                          currentUser
+                          ? (m.user_id === currentUser.id ? true : false) 
+                          : false
+                        } />
                     </div>
                   ))}
                 </div>
                 <div className="chatBoxBottom">
                   <textarea onChange={e => setNewMessage(e.target.value)}
-                    rows="1"
-                    value={newMessage}
-                    className="chatMessageInput" 
-                    placeholder="write something...">
+                      rows="1"
+                      value={newMessage}
+                      className="chatMessageInput" 
+                      placeholder="write something..."
+                      disabled={currentUser ? 0 : 1}>
                   </textarea>
-                  <button onClick={handleSubmit} className="chatSubmitButton">Send</button>
+                  <button onClick={handleSubmit} 
+                      className="chatSubmitButton"
+                      disabled={currentUser ? 0 : 1}>
+                    Send
+                  </button>
                 </div>
               </> 
               : <span className="noConversationText">Open a chat to start talking.</span>

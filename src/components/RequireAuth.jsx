@@ -1,33 +1,23 @@
-import { useEffect, useRef } from "react";
 import { useLocation, Navigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from '../contexts/AuthContext.jsx';
 
 export default function RequireAuth({ children }) {
-  let { currentUser, setCurrentUser } = useAuth();
   let location = useLocation();
-  let user = useRef(null);
+  let { currentUser } = useAuth();
 
-  //check user in local storage
-  useEffect(() => {
-    if (!currentUser) {
-      const storedUser = JSON.parse(localStorage.getItem('currentUser'));
-
-      if (storedUser !== null) {
-        setCurrentUser(storedUser);
-        user.current = storedUser;
-      }
-    } else {
-      user.current = currentUser;
+  //runs on page refresh, check if user is in local storage
+  if (!currentUser) {
+    const storedUser = localStorage.getItem("currentUser");
+    if (!storedUser) {
+      //no user in local storage
+      return <Navigate to="/" state={{ from: location }} replace />;
     }
-  }, []);
-
-  //console.log(user.current);
-
-  //redirect if user not logged in
-  if (!user) {
-    return <Navigate to="/" state={{from: location}} replace />;
+    else {
+      //user found in local storage
+      return children;
+    }
   } else {
+    //user set in auth context
     return children;
   }
 }
-
