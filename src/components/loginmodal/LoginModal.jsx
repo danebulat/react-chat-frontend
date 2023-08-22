@@ -35,6 +35,7 @@ export default function LoginModal({ show, setShow }) {
 
   return (
     <div className={ show ? "loginModal showModal" : "loginModal hideModal"} >
+      <div className="loginModalOuter">
       <div className="loginModalInner">
         <form className="loginForm" onSubmit={handleSubmit}>
           <h1 className="loginTitle">Login</h1>
@@ -62,6 +63,7 @@ export default function LoginModal({ show, setShow }) {
             </button>
         </form>
 
+      </div>
       </div> 
     </div>
   );

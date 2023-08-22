@@ -1,8 +1,7 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import { Login }         from './components/Login';
-import { Profile }       from './components/Profile';
-import Messenger         from './pages/messenger/Messenger';
+import { Profile }       from './pages/profile/Profile.jsx';
+import Messenger         from './pages/messenger/Messenger.jsx';
 import RequireAuth       from './components/RequireAuth.jsx';
 
 function App() {
@@ -10,8 +9,6 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Messenger />} />
-
-      <Route path="/login" element={<Login />} />
 
       <Route path="/profile" element={
         <RequireAuth>

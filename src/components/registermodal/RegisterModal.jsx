@@ -35,33 +35,35 @@ export default function RegisterModal({ show, setShow }) {
 
   return (
     <div className={ show ? "registerModal showModal" : "registerModal hideModal"} >
-      <div className="registerModalInner">
-        <form className="registerForm" onSubmit={handleSubmit}>
-          <h1 className="registerTitle">Register</h1>
-          {registerError && <span className="registerError">{registerErrorMsg}</span>}
-          <input
-            className="formInput"
-            type="text"
-            placeholder="username"
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-          />
-          <input
-            className="formInput"
-            type="password"
-            placeholder="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          />
-            <button className="registerSubmitButton" type="submit"
-                disabled={loading ? 1 : 0} >
-              Register 
-            </button>
-            <button className="registerCloseButton" onClick={handleClose}>
-              Close
-            </button>
-        </form>
+      <div className="registerModalOuter">
+        <div className="registerModalInner">
+          <form className="registerForm" onSubmit={handleSubmit}>
+            <h1 className="registerTitle">Register</h1>
+            {registerError && <span className="registerError">{registerErrorMsg}</span>}
+            <input
+              className="formInput"
+              type="text"
+              placeholder="username"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+            />
+            <input
+              className="formInput"
+              type="password"
+              placeholder="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
+              <button className="registerSubmitButton" type="submit"
+                  disabled={loading ? 1 : 0} >
+                Register 
+              </button>
+              <button className="registerCloseButton" onClick={handleClose}>
+                Close
+              </button>
+          </form>
 
+        </div>
       </div> 
     </div>
   );

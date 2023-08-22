@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useAuth, AuthContext} from '../../contexts/AuthContext';
 import TopBar from '../../components/topbar/TopBar';
-import Conversation from '../../components/conversations/Conversation';
+import Conversation from '../../components/conversation/Conversation';
 import Message from '../../components/message/Message';
 import ChatOnline from '../../components/chatonline/ChatOnline';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
+import { serverUri, socketUri } from '../../config/server.js';
 import './messenger.css';
 
 export default function Messenger() {
@@ -71,14 +72,13 @@ export default function Messenger() {
     
   //connect socket regardless of login status
   useEffect(() => {
-    console.log('current user ' + currentUser);
 
     if (!socket.current) {
-      console.log('connect socket...');
+      //console.log('connect socket...');
 
       //ensure socket is connected on page load
-      socket.current = io("ws://localhost:8900");
-     
+      socket.current = io(`${socketUri}`);
+      
       //get connected users
       socket.current.on("getUsers", users => {
         setOnlineUsers(users); //TODO: Store only user ids
@@ -86,7 +86,7 @@ export default function Messenger() {
 
       //after joining a chat
       socket.current.on("chatJoined", _res => {
-        console.log('chat joined...');
+        //console.log('chat joined...');
       });
 
       //after receiving a message
@@ -119,7 +119,7 @@ export default function Messenger() {
     //get all conversations using api
     const getConversations = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/conversations");
+        const res = await axios.get(`${serverUri}/api/conversations`);
         setConversations(res.data);
       }
       catch (err) {
@@ -130,7 +130,7 @@ export default function Messenger() {
     //get all registered users using api
     const getRegisteredUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users");
+        const res = await axios.get(`${serverUri}/api/users`);
         setRegisteredUsers(res.data);
       }
       catch (err) {
@@ -155,7 +155,7 @@ export default function Messenger() {
       try {
         //use api to get messages
         const res = await axios.get(
-          `http://localhost:5000/api/messages/${currentChat.id}`
+          `${serverUri}/api/messages/${currentChat.id}`
         );
         setMessages(res.data);
 
@@ -192,7 +192,7 @@ export default function Messenger() {
 
     try {
       //store message using api
-      const res = await axios.post("http://localhost:5000/api/messages",
+      const res = await axios.post(`${serverUri}/api/messages`,
         message,
         { headers: { authorization: "Bearer " + currentUser.accessToken }}
       );
@@ -230,13 +230,17 @@ export default function Messenger() {
 
         <div className="chatMenu">
           <div className="chatMenuWrapper">
-            <input placeholder="Search conversations" className="chatMenuInput" />
+            <input disabled placeholder="Search conversations" className="chatMenuInput" />
             <h2 className="chatsHeader">Chats</h2>
             { conversations.map(c => (
               <div key={c.title} onClick={() => setCurrentChat(c)}>
-                <Conversation conversation={c}/>
+                <Conversation conversation={c} currentConversation={currentChat}/>
               </div>
             ))}
+            <h2 className="chatsHeader">User</h2>
+            <p className={ currentUser ? "usernameText" : "anonymousText" }>
+              { currentUser ? currentUser.username : "anonymous" }
+            </p>
           </div>
         </div>
 
@@ -263,7 +267,7 @@ export default function Messenger() {
                       rows="1"
                       value={newMessage}
                       className="chatMessageInput" 
-                      placeholder="write something..."
+                      placeholder={currentUser ? "write something..." : "Please log in to chat"}
                       disabled={currentUser ? 0 : 1}>
                   </textarea>
                   <button onClick={handleSubmit} 

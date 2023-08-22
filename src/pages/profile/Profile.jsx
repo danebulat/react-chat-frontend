@@ -1,4 +1,4 @@
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import jwt_decode from 'jwt-decode';
 
 export function Profile() {

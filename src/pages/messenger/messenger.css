@@ -27,7 +27,21 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   color: #777;
+  margin: 10px 10px 10px;
+}
+.chatsHeader:first-of-type {
   margin: 0px 10px 10px;
+}
+.usernameText {
+  font-size: 14px;
+  margin: 0 10px;
+  font-weight: 500;
+}
+.anonymousText {
+  font-size: 14px;
+  color: #777;
+  margin: 0 10px;
+  font-weight: 500;
 }
 .chatMenuInput:focus {
   outline: none;
@@ -79,6 +93,12 @@ body {
   color: #fff;
   font-family: 'Noto Sans', sans-serif;
   font-weight: 500;
+}
+.chatSubmitButton[disabled],
+.chatSubmitButton[disabled]:hover {
+  background-color: #7c55ad;
+  color: #a979e5;
+  cursor: default;
 }
 .chatSubmitButton:hover {
   background-color: #7e44c7;

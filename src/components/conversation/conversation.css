@@ -5,6 +5,14 @@
   cursor: pointer;
   font-size: 14px;
 }
+.currentConversation {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: #5852d6;
+}
 .conversation:hover {
   background-color: #202020;
 }
