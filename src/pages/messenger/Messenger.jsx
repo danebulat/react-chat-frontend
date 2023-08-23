@@ -30,16 +30,22 @@ export default function Messenger() {
   /* -------------------------------------------------- */
 
   function getOnlineUsers() {
-    const onlineIds = onlineUsers.map(o => o.userId);
+    if (onlineUsers.length === 0) {
+      return [];
+    }
 
+    const onlineIds = onlineUsers.map(o => o.userId);
     return registeredUsers.filter(u => {
       return onlineIds.includes(Number(u.userId));
     });
   }
 
   function getOfflineUsers() {
-    const onlineIds = onlineUsers.map(o => o.userId);
+    if (onlineUsers.length === 0) {
+      return [];
+    }
 
+    const onlineIds = onlineUsers.map(o => o.userId);
     return registeredUsers.filter(u => {
       return !onlineIds.includes(Number(u.userId));
     });
@@ -74,7 +80,7 @@ export default function Messenger() {
   useEffect(() => {
 
     if (!socket.current) {
-      //console.log('connect socket...');
+      //console.log(`socket path: ${socketPath}`);
 
       //ensure socket is connected on page load
       socket.current = io(`${socketUri}`);
@@ -231,15 +237,25 @@ export default function Messenger() {
         <div className="chatMenu">
           <div className="chatMenuWrapper">
             <input disabled placeholder="Search conversations" className="chatMenuInput" />
+            <h2 className="chatsHeader">User</h2>
+            <p className={ currentUser ? "usernameText" : "anonymousText" }>
+              { currentUser ? currentUser.username : "anonymous" }
+            </p>
             <h2 className="chatsHeader">Chats</h2>
             { conversations.map(c => (
               <div key={c.title} onClick={() => setCurrentChat(c)}>
                 <Conversation conversation={c} currentConversation={currentChat}/>
               </div>
             ))}
-            <h2 className="chatsHeader">User</h2>
-            <p className={ currentUser ? "usernameText" : "anonymousText" }>
-              { currentUser ? currentUser.username : "anonymous" }
+            <h2 className="chatsHeader">Source Code</h2>
+            <p className="codeLink">
+              <a href="https://github.com/danebulat/react-chat-frontend" target="_blank">Frontend</a>
+            </p>
+            <p className="codeLink">
+              <a href="https://github.com/danebulat/react-chat-backend" target="_blank">Backend</a>
+            </p>
+            <p className="codeLink">
+              <a href="https://github.com/danebulat/react-chat-socket" target="_blank">Socket</a>
             </p>
           </div>
         </div>

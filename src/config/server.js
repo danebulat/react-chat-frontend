@@ -17,3 +17,4 @@ export const socketUri =
   devMode
     ? import.meta.env.VITE_APP_SOCKET_URI_DEV
     : import.meta.env.VITE_APP_SOCKET_URI_PROD;
+
